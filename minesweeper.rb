@@ -1,8 +1,12 @@
 require "./board.rb"
+require "yaml"
 
 class Minesweeper
 
   def self.load(file_name)
+    game = Minesweeper.new
+    game.board = YAML.load_file(file_name)
+    game.run
   end
 
   def self.play(rows = 9, cols = 9)
@@ -22,8 +26,6 @@ class Minesweeper
     until @board.over?
       puts display
       # debug_display
-      puts "\nMake a move with format: 'c'x,y."
-      puts "'c' is either r for reveal, or f for flag."
       flag, pos = gets_user_input
       @board.update(flag, pos)
     end
@@ -36,13 +38,19 @@ class Minesweeper
     end
   end
 
-  def gets_user_input()
+  def gets_user_input
     loop do
+      puts "\nMake a move with format: 'c'x,y."
+      puts "'c' is either r for reveal, or f for flag."
       initial_input = gets.chomp
-      flag = initial_input[0]
-      pos = initial_input[1..-1].split(',').map{ |el| el.to_i }
-      return [flag, pos] if valid_input?(flag, pos)
-      puts "Invalid move. Try again"
+      if initial_input == "s"
+        save
+      else
+        flag = initial_input[0]
+        pos = initial_input[1..-1].split(',').map{ |el| el.to_i }
+        return [flag, pos] if valid_input?(flag, pos)
+        puts "Invalid move. Try again"
+      end
     end
   end
 
@@ -66,17 +74,9 @@ class Minesweeper
     str
   end
 
-  def debug_display
-    @board.bound_rows.times do |i|
-      print "\n"
-      @board.bound_cols.times do |j|
-        if @board[[i, j]].bomb
-          print 1
-        else
-          print 0
-        end
-      end
-    end
+  def save
+    File.write("minesweeper_save", board.to_yaml)
+    puts "Game saved!"
   end
 
 end
