@@ -34,7 +34,7 @@ class Board
     positions = []
 
     SHIFT.each do |(x, y)|
-      positions << [row + x, row + y]
+      positions << [row + x, col + y]
     end
 
     positions.select { |pos| pos[0].between?(0, @bound_rows - 1) &&
@@ -42,9 +42,7 @@ class Board
   end
 
   def get_neighbors(tile)
-
     adjacent_positions(tile.position).map do |pos|
-      byebug if pos == [0,0]
       self[pos] || Tile.random_tile(pos)
     end
   end
@@ -62,7 +60,11 @@ end
 def debugging
   a = Board.new(9, 9)
   a.generate_tiles
-  p a.tiles.first[1]
+  b = a.tiles.first.first.neighbors.first.neighbors
+  b.each do |el|
+    p el.object_id
+  end
+  p a.tiles.first.first.object_id
 end
 
 debugging
