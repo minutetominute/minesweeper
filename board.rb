@@ -21,7 +21,10 @@ class Board
 
         neighbors.each do |neighbor|
           current_tile.add_neighbor(neighbor)
+          self[neighbor.position] ||= neighbor
         end
+
+        self[[row,col]] = current_tile
       end
     end
   end
@@ -41,29 +44,25 @@ class Board
   def get_neighbors(tile)
 
     adjacent_positions(tile.position).map do |pos|
+      byebug if pos == [0,0]
       self[pos] || Tile.random_tile(pos)
     end
   end
 
   def [](pos)
-    begin
     row, col = pos
     @tiles[row][col]
-  rescue
-    byebug
   end
-  end
-end
-a = Board.new(9, 9)
-a.generate_tiles
 
-9.times do |i|
-  print "/n"
-  9.times do |j|
-    if a[[i, j]].bomb
-      print 1
-    else
-      print 0
-    end
+  def []=(pos, tile)
+    row, col = pos
+    @tiles[row][col] = tile
   end
 end
+def debugging
+  a = Board.new(9, 9)
+  a.generate_tiles
+  p a.tiles.first[1]
+end
+
+debugging

@@ -4,7 +4,7 @@ class Tile
   end
 
   def self.random_bomb
-    rand(2) == 0
+    rand(5) == 0
   end
 
   attr_reader :position, :bomb, :neighbors, :state
