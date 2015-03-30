@@ -5,8 +5,8 @@ class Minesweeper
   def self.load(file_name)
   end
 
-  def self.play
-    game = Minesweeper.new
+  def self.play(rows = 9, cols = 9)
+    game = Minesweeper.new(rows, cols)
     game.run
   end
 
@@ -19,40 +19,48 @@ class Minesweeper
 
   def run
     puts "Welcome to minesweeper!"
+
     until @board.over?
       puts display
-      debug_display
+      # debug_display
       puts "\nMake a move with format: +x,+y"
-      input = gets_user_input
-      @board.update(input)
+      flag, pos = gets_user_input
+      @board.update(flag, pos)
+    end
+    if @board.won?
+      puts "YOU WIN!!!!!"
+    else
+      puts "YOU LOSE YOU DINGUS!"
     end
   end
 
   def gets_user_input()
-    input = nil
     loop do
-      input = gets.chomp
-      input = input.split(',').map { |n| n.to_i }
-      return input if valid_input?(input)
+      initial_input = gets.chomp
+      flag = initial_input[0]
+      pos = initial_input[1..-1].split(',').map{ |el| el.to_i }
+      return [flag, pos] if valid_input?(flag, pos)
       puts "Invalid move. Try again"
     end
   end
 
-  def valid_input?(input)
-    row, col = input
-    max_row = @board.bound_rows - 1
-    max_col = @board.bound_cols - 1
-    row.between?(0, max_row) && col.between?(0, max_col)
+  def valid_input?(flag, pos)
+    row, col = pos
+    max_row, max_col = @board.bound_rows - 1, @board.bound_cols - 1
+    pos_check = row.between?(0, max_row) && col.between?(0, max_col)
+    flag_check = (flag == "r" || flag == "f")
+    pos_check && flag_check
   end
 
   def display
     str = ""
     @board.bound_rows.times do |i|
-      str << "\n"
+      str << "\n-" + ('-' * 2 * @board.bound_rows) + "\n|"
       @board.bound_cols.times do |j|
-        str << @board[[i, j]].print
+        str << @board[[i, j]].print+"|"
       end
     end
+    str << "\n-" + ('-' * 2 * @board.bound_rows) + "\n"
     str
   end
 

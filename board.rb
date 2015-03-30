@@ -57,16 +57,30 @@ class Board
     @tiles[row][col] = tile
   end
 
+  def won?
+    won = true
+    @tiles.each do |row|
+      row.each do |tile|
+        won = false if tile.hidden && !tile.bomb
+      end
+    end
+    won
+  end
+
   def over?
     @tiles.each do |row|
       row.each do |tile|
         return true if tile.bomb && !tile.hidden
       end
     end
-    false
+    won?
   end
 
-  def update(input)
-    self[input].reveal
+  def update(flag, pos)
+    if flag == "r"
+      self[pos].reveal
+    else
+      self[pos].flag
+    end
   end
 end

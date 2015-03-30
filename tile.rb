@@ -7,7 +7,7 @@ class Tile
     rand(5) == 0
   end
 
-  attr_reader :position, :bomb, :neighbors, :hidden
+  attr_accessor :position, :bomb, :neighbors, :hidden, :flagged
 
   def initialize(pos, bomb, neighbors, hidden)
     @position = pos
@@ -22,24 +22,30 @@ class Tile
   end
 
   def reveal
-    hidden = false
-    p position
-    p hidden
-    byebug if neighbors.any? { |neighbor| neighbor.bomb }
+    return if self.flagged
+    self.hidden = false
 
-    neighbors.select { |n| hidden }.each do |neighbor|
+    return if neighbors.any? { |neighbor| neighbor.bomb }
+    
+    neighbors.select { |n| n.hidden }.each do |neighbor|
       neighbor.reveal
     end
 
   end
 
   def print
-    if hidden
-       return "*"
+    if self.flagged
+      return "F"
+    elsif hidden
+      return "*"
     else
       num = neighbors.count {|neighbor| neighbor.bomb}
       return "_" if num == 0
       num.to_s
     end
+  end
+
+  def flag
+    self.flagged = !self.flagged
   end
 end
