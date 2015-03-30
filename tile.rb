@@ -1,13 +1,15 @@
 class Tile
   def self.random_tile(pos)
-    tile = Tile.new(pos, Tile.random_bomb, [], nil)
+    return Tile.new(pos, Tile.random_bomb, [], nil)
   end
 
   def self.random_bomb
     rand(2) == 0
   end
 
-  def initiliaze(pos, bomb, neighbors, state)
+  attr_reader :position, :bomb, :neighbors, :state
+
+  def initialize(pos, bomb, neighbors, state)
     @position = pos
     @bomb = bomb
     @neighbors = neighbors
