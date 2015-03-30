@@ -22,8 +22,15 @@ class Tile
   end
 
   def reveal
-    if hidden
-      hidden = false
+    hidden = false
+    p position
+    p hidden
+    byebug if neighbors.any? { |neighbor| neighbor.bomb }
+
+    neighbors.select { |n| hidden }.each do |neighbor|
+      neighbor.reveal
+    end
+
   end
 
   def print
@@ -33,6 +40,6 @@ class Tile
       num = neighbors.count {|neighbor| neighbor.bomb}
       return "_" if num == 0
       num.to_s
-    # end
+    end
   end
 end

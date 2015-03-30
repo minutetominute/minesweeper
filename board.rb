@@ -60,13 +60,13 @@ class Board
   def over?
     @tiles.each do |row|
       row.each do |tile|
-        return true if tile.bomb && !tile.hidden 
+        return true if tile.bomb && !tile.hidden
       end
     end
     false
   end
 
   def update(input)
-    self[input]
+    self[input].reveal
   end
 end
