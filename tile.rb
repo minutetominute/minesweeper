@@ -1,6 +1,6 @@
 class Tile
   def self.random_tile(pos)
-    return Tile.new(pos, Tile.random_bomb, [], true)
+    Tile.new(pos, Tile.random_bomb, [], true)
   end
 
   def self.random_bomb
@@ -24,21 +24,17 @@ class Tile
   def reveal
     return if self.flagged
     unhide
-
-    return if neighbors.any? { |neighbor| neighbor.bomb }
-
-    neighbors.select { |n| n.hidden }.each do |neighbor|
-      neighbor.reveal
-    end
+    return if neighbors.any?(&:bomb)
+    neighbors.select(&:hidden).each(&:reveal)
   end
 
   def print
     if self.flagged
-      return "F"
+      "F"
     elsif hidden
-      return "*"
+      "*"
     elsif self.bomb
-      return "B"
+      "B"
     else
       num = neighbors.count {|neighbor| neighbor.bomb}
       return " " if num == 0

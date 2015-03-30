@@ -69,13 +69,17 @@ class Board
     won
   end
 
-  def over?
+  def lost?
     @tiles.each do |row|
       row.each do |tile|
         return true if tile.bomb && !tile.hidden
       end
     end
-    won?
+    false
+  end
+
+  def over?
+    won? || lost?
   end
 
   def update(flag, pos)
