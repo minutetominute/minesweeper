@@ -4,7 +4,7 @@ require "byebug"
 class Board
 
   SHIFT = [[-1,1], [-1, 0], [-1, -1], [0, 1], [0, -1], [1, 1], [1, 0], [1, -1]]
-  attr_reader :tiles
+  attr_reader :tiles, :bound_rows, :bound_cols
   def initialize(rows, cols)
     #array of nodes
     @bound_rows = rows
@@ -56,15 +56,17 @@ class Board
     row, col = pos
     @tiles[row][col] = tile
   end
-end
-def debugging
-  a = Board.new(9, 9)
-  a.generate_tiles
-  b = a.tiles.first.first.neighbors.first.neighbors
-  b.each do |el|
-    p el.object_id
-  end
-  p a.tiles.first.first.object_id
-end
 
-debugging
+  def over?
+    @tiles.each do |row|
+      row.each do |tile|
+        return true if tile.bomb && !tile.hidden 
+      end
+    end
+    false
+  end
+
+  def update(input)
+    self[input]
+  end
+end
