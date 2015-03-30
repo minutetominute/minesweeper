@@ -38,7 +38,6 @@ class Board
     SHIFT.each do |(x, y)|
       positions << [row + x, col + y]
     end
-
     positions.select { |pos| pos[0].between?(0, @bound_rows - 1) &&
        pos[1].between?(0, @bound_cols - 1)}
   end
@@ -60,22 +59,11 @@ class Board
   end
 
   def won?
-    won = true
-    @tiles.each do |row|
-      row.each do |tile|
-        won = false if tile.hidden && !tile.bomb
-      end
-    end
-    won
+    @tiles.flatten.none?{ |tile| tile.hidden && !tile.bomb }
   end
 
   def lost?
-    @tiles.each do |row|
-      row.each do |tile|
-        return true if tile.bomb && !tile.hidden
-      end
-    end
-    false
+    @tiles.flatten.any?{ |tile| tile.bomb && !tile.hidden }
   end
 
   def over?
@@ -83,19 +71,10 @@ class Board
   end
 
   def update(flag, pos)
-    if flag == "r"
-      self[pos].reveal
-    else
-      self[pos].flag
-    end
+    flag == "r"? self[pos].reveal : self[pos].flag
   end
 
   def reveal_all
-    @tiles.each do |row|
-      row.each do |cell|
-        cell.unhide
-      end
-    end
+    @tiles.flatten.each(&:unhide)
   end
-
 end
