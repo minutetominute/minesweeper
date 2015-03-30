@@ -1,15 +1,17 @@
 require "./tile.rb"
-require "byebug"
 
 class Board
 
-  SHIFT = [[-1,1], [-1, 0], [-1, -1], [0, 1], [0, -1], [1, 1], [1, 0], [1, -1]]
+  SHIFT = [[-1,1], [-1, 0], [-1, -1], [0, 1],
+  [0, -1], [1, 1], [1, 0], [1, -1]]
+
   attr_reader :tiles, :bound_rows, :bound_cols
+
   def initialize(rows, cols)
-    #array of nodes
     @bound_rows = rows
     @bound_cols = cols
     @tiles = Array.new(@bound_rows) { Array.new(@bound_cols) }
+    generate_tiles
   end
 
   def generate_tiles
@@ -83,4 +85,13 @@ class Board
       self[pos].flag
     end
   end
+
+  def reveal_all
+    @tiles.each do |row|
+      row.each do |cell|
+        cell.unhide
+      end
+    end
+  end
+
 end

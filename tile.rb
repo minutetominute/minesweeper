@@ -23,14 +23,13 @@ class Tile
 
   def reveal
     return if self.flagged
-    self.hidden = false
+    unhide
 
     return if neighbors.any? { |neighbor| neighbor.bomb }
-    
+
     neighbors.select { |n| n.hidden }.each do |neighbor|
       neighbor.reveal
     end
-
   end
 
   def print
@@ -38,11 +37,17 @@ class Tile
       return "F"
     elsif hidden
       return "*"
+    elsif self.bomb
+      return "B"
     else
       num = neighbors.count {|neighbor| neighbor.bomb}
-      return "_" if num == 0
+      return " " if num == 0
       num.to_s
     end
+  end
+
+  def unhide
+    self.hidden = false
   end
 
   def flag

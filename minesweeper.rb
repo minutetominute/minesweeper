@@ -14,7 +14,6 @@ class Minesweeper
 
   def initialize(rows = 9, cols = 9)
     @board = Board.new(rows, cols)
-    @board.generate_tiles
   end
 
   def run
@@ -23,14 +22,17 @@ class Minesweeper
     until @board.over?
       puts display
       # debug_display
-      puts "\nMake a move with format: +x,+y"
+      puts "\nMake a move with format: 'c'x,y."
+      puts "'c' is either r for reveal, or f for flag."
       flag, pos = gets_user_input
       @board.update(flag, pos)
     end
     if @board.won?
       puts "YOU WIN!!!!!"
     else
-      puts "YOU LOSE YOU DINGUS!"
+      @board.reveal_all
+      puts display
+      puts "YOU LOSE, YOU DINGUS!"
     end
   end
 
